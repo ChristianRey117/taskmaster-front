@@ -1,5 +1,5 @@
 import Login from "~/components/Login/login";
-import type { Route } from "./+types/login";
+import type { Route } from "./+types/login.page";
 import { Grid } from "@mui/material";
 
 export function meta({}: Route.MetaArgs) {
