@@ -1,5 +1,6 @@
 import Login from "~/components/Login/login";
 import type { Route } from "./+types/login";
+import { Grid } from "@mui/material";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,8 +11,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function LoginPage() {
   return (
-    <>
+    <Grid container size={12} justifyContent={"center"} paddingTop={"10%"}>
       <Login></Login>
-    </>
+    </Grid>
   );
 }
