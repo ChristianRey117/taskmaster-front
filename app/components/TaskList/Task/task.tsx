@@ -19,9 +19,13 @@ export default function Task(task: ITask) {
   const [isClickDescription, setIsClickDescription] = useState(false);
   const [newDescription, setNewDescription] = useState<string | null>(null);
 
+  const [isLoadingEdit, setIsLoadingEdit] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
   useEffect(() => {}, []);
 
   const sendData = () => {
+    setIsLoadingEdit(true);
     const request = {
       ...task,
       title: task.title,
@@ -37,6 +41,23 @@ export default function Task(task: ITask) {
     })
       .then((res) => res.json())
       .then((data: ITaskResponse) => {
+        setIsLoadingEdit(false);
+
+        window.location.reload();
+      });
+  };
+
+  const deleteData = () => {
+    setIsLoadingDelete(true);
+    fetch("http://localhost:3000/task/" + task.id, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data: ITaskResponse) => {
+        setIsLoadingDelete(false);
         window.location.reload();
       });
   };
@@ -101,11 +122,18 @@ export default function Task(task: ITask) {
             <Grid size={6} offset={6}>
               <Grid container>
                 <Grid size={6}>
-                  <Button onClick={sendData}>Edit</Button>
+                  <Button loading={isLoadingEdit} onClick={sendData}>
+                    Edit
+                  </Button>
                 </Grid>
 
                 <Grid size={6}>
-                  <Button variant="contained" color="error">
+                  <Button
+                    variant="contained"
+                    color="error"
+                    loading={isLoadingDelete}
+                    onClick={deleteData}
+                  >
                     Delete
                   </Button>
                 </Grid>
