@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./login.css";
-
+import { post } from "../../interceptor/interceptor";
 export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -16,6 +16,12 @@ export default function Login() {
         className="form"
         onSubmit={(event) => {
           event.preventDefault();
+          post("/user", { email: username, password: password }, {}).then(
+            (res: { token: string }) => {
+              console.log(res);
+              localStorage.setItem("token", res.token);
+            }
+          );
         }}
       >
         <p className="form-title">Sign in to your account</p>
