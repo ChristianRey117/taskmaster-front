@@ -33,9 +33,30 @@ const tasksSlice = createSlice({
       if (index !== -1) {
         state.list[index] = action.payload;
       }
+      fetch("http://localhost:3000/task/" + action.payload.id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(action.payload),
+      })
+        .then((res) => res.json())
+        .then(() => {
+          window.location.reload();
+        });
     },
     deleteTask: (state, action: PayloadAction<number>) => {
       state.list = state.list.filter((task) => task.id !== action.payload);
+      fetch("http://localhost:3000/task/" + action.payload, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then(() => {
+          window.location.reload();
+        });
     },
   },
 });

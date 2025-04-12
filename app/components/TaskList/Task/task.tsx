@@ -11,6 +11,14 @@ import {
 import { useEffect, useState } from "react";
 import type { ITask, ITaskResponse } from "~/intefaces/ITaskResponse";
 import "./task.css";
+import { useDispatch } from "react-redux";
+
+import {
+  addTask,
+  updateTask,
+  deleteTask,
+} from "../../../redux/task-reducer/task-reducer";
+
 export default function Task(task: ITask) {
   const [statusTask, setStatusTask] = useState<
     "TODO" | "DOING" | "DONE" | null
@@ -22,6 +30,8 @@ export default function Task(task: ITask) {
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {}, []);
 
   const sendData = () => {
@@ -32,34 +42,12 @@ export default function Task(task: ITask) {
       description: newDescription ?? task.description,
       state: statusTask ?? task.state,
     } as ITask;
-    fetch("http://localhost:3000/task/" + task.id, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    })
-      .then((res) => res.json())
-      .then((data: ITaskResponse) => {
-        setIsLoadingEdit(false);
-
-        window.location.reload();
-      });
+    dispatch(updateTask(request));
   };
 
   const deleteData = () => {
     setIsLoadingDelete(true);
-    fetch("http://localhost:3000/task/" + task.id, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data: ITaskResponse) => {
-        setIsLoadingDelete(false);
-        window.location.reload();
-      });
+    dispatch(deleteTask(task.id));
   };
   return (
     <>

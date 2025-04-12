@@ -11,6 +11,13 @@ import { useEffect, useState } from "react";
 import type { ITask, ITaskResponse } from "~/intefaces/ITaskResponse";
 import Task from "./Task/task";
 
+import {
+  addTask,
+  updateTask,
+  deleteTask,
+} from "../../redux/task-reducer/task-reducer";
+import { useDispatch } from "react-redux";
+
 export default function TaskList() {
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [statusTask, setStatusTask] = useState<
@@ -23,6 +30,8 @@ export default function TaskList() {
     description: "",
     state: "",
   });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getData();
@@ -154,6 +163,7 @@ export default function TaskList() {
           </Grid>
         </Grid>
         {tasks.map((task) => {
+          dispatch(addTask({ ...task }));
           if (statusTask) {
             if (statusTask == task.state) {
               return (
