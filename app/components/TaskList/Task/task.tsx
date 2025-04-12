@@ -1,9 +1,45 @@
-import { Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
-import { useEffect } from "react";
-import type { ITask } from "~/intefaces/ITaskResponse";
-
+import {
+  Autocomplete,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  Input,
+  TextField,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import type { ITask, ITaskResponse } from "~/intefaces/ITaskResponse";
+import "./task.css";
 export default function Task(task: ITask) {
+  const [statusTask, setStatusTask] = useState<
+    "TODO" | "DOING" | "DONE" | null
+  >(null);
+
+  const [isClickDescription, setIsClickDescription] = useState(false);
+  const [newDescription, setNewDescription] = useState<string | null>(null);
+
   useEffect(() => {}, []);
+
+  const sendData = () => {
+    const request = {
+      ...task,
+      title: task.title,
+      description: newDescription ?? task.description,
+      state: statusTask ?? task.state,
+    } as ITask;
+    fetch("http://localhost:3000/task/" + task.id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    })
+      .then((res) => res.json())
+      .then((data: ITaskResponse) => {
+        window.location.reload();
+      });
+  };
   return (
     <>
       <Card>
@@ -11,20 +47,67 @@ export default function Task(task: ITask) {
         <CardContent>
           <Grid container>
             <Grid size={12} padding={"0 1rem"}>
-              <small>{task.description}</small>
+              {isClickDescription ? (
+                <>
+                  <Input
+                    placeholder="New description"
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      setNewDescription(e.target.value);
+                      task.description = e.target.value;
+                    }}
+                  ></Input>
+
+                  <Button
+                    onClick={() => {
+                      setIsClickDescription(false);
+                    }}
+                  >
+                    Done
+                  </Button>
+                </>
+              ) : (
+                <div
+                  className="input-click"
+                  onClick={() => {
+                    setIsClickDescription(true);
+                  }}
+                >
+                  <small>
+                    {newDescription ? newDescription : task.description}
+                  </small>
+                </div>
+              )}
             </Grid>
-            <Grid size={12} padding={"0 1rem"}>
-              <p>{task.state}</p>
+            <Grid size={12} padding={"1rem 1rem"}>
+              <Autocomplete
+                disablePortal
+                options={["TODO", "DOING", "DONE"]}
+                sx={{ width: 300 }}
+                onChange={(e) => {
+                  setStatusTask(
+                    e.currentTarget.textContent as "TODO" | "DONE" | "DOING"
+                  );
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={"Actual state: " + task.state}
+                  />
+                )}
+              />
             </Grid>
 
             <Grid size={6} offset={6}>
               <Grid container>
                 <Grid size={6}>
-                  <Button>Edit</Button>
+                  <Button onClick={sendData}>Edit</Button>
                 </Grid>
 
                 <Grid size={6}>
-                  <Button>Delete</Button>
+                  <Button variant="contained" color="error">
+                    Delete
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>
