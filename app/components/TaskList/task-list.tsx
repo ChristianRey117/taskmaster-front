@@ -22,15 +22,20 @@ export default function TaskList() {
   };
   return (
     <Grid container padding={"2rem"}>
-      <Grid size={12}>
+      <Grid size={12} padding={"2rem"}>
         <h1>Tasks</h1>
       </Grid>
 
       <Grid container size={12}>
-        <Grid size={6}>
+        <Grid size={6} paddingLeft={"2rem"}>
           <p>Filter</p>
         </Grid>
-        <Grid size={6}>
+        <Grid
+          size={6}
+          justifyContent={"end"}
+          display={"flex"}
+          paddingRight={"2rem"}
+        >
           <Autocomplete
             disablePortal
             options={["TODO", "DOING", "DONE"]}
