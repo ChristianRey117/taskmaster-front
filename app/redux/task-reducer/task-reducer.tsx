@@ -1,6 +1,6 @@
 // store/tasksSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
+import { post, get, put, del } from "../../interceptor/interceptor";
 // Define la interfaz para una tarea
 export interface Task {
   id?: number;
@@ -33,30 +33,15 @@ const tasksSlice = createSlice({
       if (index !== -1) {
         state.list[index] = action.payload;
       }
-      fetch("http://localhost:3000/task/" + action.payload.id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(action.payload),
-      })
-        .then((res) => res.json())
-        .then(() => {
-          window.location.reload();
-        });
+      put("/task/" + action.payload.id, action.payload, {}).then((res) => {
+        window.location.reload();
+      });
     },
     deleteTask: (state, action: PayloadAction<number>) => {
       state.list = state.list.filter((task) => task.id !== action.payload);
-      fetch("http://localhost:3000/task/" + action.payload, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then(() => {
-          window.location.reload();
-        });
+      del("/task/" + action.payload, {}).then((res) => {
+        window.location.reload();
+      });
     },
   },
 });

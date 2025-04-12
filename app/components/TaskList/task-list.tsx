@@ -17,6 +17,7 @@ import {
   deleteTask,
 } from "../../redux/task-reducer/task-reducer";
 import { useDispatch } from "react-redux";
+import { get, post } from "../../interceptor/interceptor";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState<ITask[]>([]);
@@ -38,25 +39,17 @@ export default function TaskList() {
   }, []);
 
   const getData = () => {
-    fetch("http://localhost:3000/task")
-      .then((res) => res.json())
-      .then((data: ITaskResponse) => {
-        setTasks(data.data);
-      });
+    get("/task", {}).then((res) => {
+      if (res.data) {
+        setTasks(res.data);
+      }
+    });
   };
 
   const saveData = () => {
-    fetch("http://localhost:3000/task", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newTask),
-    })
-      .then((res) => res.json())
-      .then((data: ITaskResponse) => {
-        window.location.reload();
-      });
+    post("/task", newTask, {}).then((res) => {
+      window.location.reload();
+    });
   };
   return (
     <>
