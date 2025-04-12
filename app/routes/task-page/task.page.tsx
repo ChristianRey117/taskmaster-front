@@ -1,7 +1,9 @@
+import TaskList from "~/components/TaskList/task-list";
+
 export default function TaskPage() {
   return (
     <>
-      <p>Task page</p>
+      <TaskList></TaskList>
     </>
   );
 }
