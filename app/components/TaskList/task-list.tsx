@@ -39,7 +39,7 @@ export default function TaskList() {
   }, []);
 
   const getData = () => {
-    get("/task", {}).then((res) => {
+    get("/user/tasks", {}).then((res) => {
       if (res.data) {
         setTasks(res.data);
       }

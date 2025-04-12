@@ -18,8 +18,10 @@ export default function Login() {
           event.preventDefault();
           post("/user", { email: username, password: password }, {}).then(
             (res: { token: string }) => {
-              console.log(res);
-              localStorage.setItem("token", res.token);
+              if (res.token) {
+                localStorage.setItem("token", res.token);
+                window.location.href = "/tasks";
+              }
             }
           );
         }}
